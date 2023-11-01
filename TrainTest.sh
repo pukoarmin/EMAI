@@ -1,0 +1,68 @@
+#!/bin/bash
+
+helpprint()
+{
+	echo ''
+	echo 'This is a fast script for identifying selective sweep using SweepNet (a developed CNN).'
+	echo ''
+	
+	echo '\t-i: path to an input folder (str), the folder should be organized as:'
+	echo '\t\tPath_input'
+	echo '\t\t--train'
+	echo '\t\t----neutral.ms'
+	echo '\t\t----selection.ms'
+	echo '\t\t--test'
+	echo '\t\t----neutral.ms'
+	echo '\t\t----selection.ms'
+	echo '\tThe sub-folders "train" and "test" both contain two files in ms format. "neutral.ms" and "selection.ms" are the ms files containing neutrality and selective sweep data respectively.'
+	echo '\tNOTE that the sub-folders and the ms files should be named and organized exactly same as the above structure.'
+	
+	echo '\t-o: path to an output folder (str)'
+	echo '\t-h: height of images (int)'
+	echo '\t-n: width of images (int)'
+	echo ''
+	
+	exit 1
+}
+
+current_path="C:\Users\pukoa\Documents\EMSYS_Master\EMAI\SweepNet"
+
+modeA=4
+modeB=6
+center='bp'
+nn='SweepNet'
+win_site=5000
+length=100000
+min_snp=1
+color='grey'
+grid=1
+
+while getopts "d:a:b:m:c:e:i:o:h:n:s:l:r:t:g:H" opt
+do
+	case "${opt}" in
+		d) data=${OPTARG};;
+		a) modeA=${OPTARG};;
+		b) modeB=${OPTARG};;
+		m) nn=${OPTARG};;
+		c) center=${OPTARG};;
+  		e) epoch=${OPTARG};;
+		i) input_path=${OPTARG};;
+		o) output_path=${OPTARG};;
+		h) height=${OPTARG};;
+		n) win_snp=${OPTARG};;
+		s) win_site=${OPTARG};;
+		l) length=${OPTARG};;
+		r) min_snp=${OPTARG};;
+		t) color=${OPTARG};;
+		g) grid=${OPTARG};;
+		H) helpprint ;;
+	esac
+done
+
+###########
+python $current_path\\NN.py -n train -m SweepNet -o $output_path\\train\\Model_A$((modeA))_B$((modeB))_"$center"_w$((win_snp))h$((height)) -h $height -w $win_snp -d $output_path\\train\\images -e $epoch -t 8 -s 8;
+
+python $current_path\\NN.py -n predict -m $output_path\\train\\Model_A$((modeA))_B$((modeB))_"$center"_w$((win_snp))h$((height)) -h $height -w $win_snp -d $output_path\\test\\images\\neutral -o $output_path\\test\\result\\neutral -t 8 -s 8;
+
+python $current_path\\NN.py -n predict -m $output_path\\train\\Model_A$((modeA))_B$((modeB))_"$center"_w$((win_snp))h$((height)) -h $height -w $win_snp -d $output_path\\test\\images\\selection -o $output_path\\test\\result\\selection -t 8 -s 8;
+
