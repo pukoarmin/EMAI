@@ -120,8 +120,10 @@ def main(argv):
 				seed=123,
 				batch_size=10)
 		quantizer = vitis_quantize.VitisQuantizer(loadedModel)
-		quantized_model = quantizer.quantize_model(calib_dataset=q_ds, cle_steps=100) 
+		quantized_model = quantizer.quantize_model(calib_dataset=q_ds, cle_steps=100, add_shape_info=True) 
 		quantized_model.save('quantized_model.h5')
+
+		### evaluate
 		quantized_model.compile(
 			optimizer='adam',
 			loss="categorical_crossentropy",
@@ -129,6 +131,8 @@ def main(argv):
 		)
 
 		quantized_model.evaluate(ev_ds)
-	
+		###
+
+
 if __name__ == "__main__":
     main(sys.argv[1:])	
