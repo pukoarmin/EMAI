@@ -3,6 +3,10 @@ import getopt
 import argparse
 import shutil
 
+import tensorflow as tf
+from tensorflow_model_optimization.quantization.keras import vitis_quantize
+from tensorflow import keras
+
 from Logic import Architecture
 from contextlib import redirect_stdout
 
@@ -94,9 +98,37 @@ def main(argv):
 		loadModel = Architecture.Load(model, direct, height, width, out, int(threads))
 		numberOfImages = loadModel.imageFolder()
 		loadModel.generateReport()
-		
 	
-	
+	if (mod == "quantize"):
+		loadedModel = Architecture.Load(model, direct, height, width, out, int(threads)).loadedModel
+		q_ds = tf.keras.preprocessing.image_dataset_from_directory(
+                "/home/s3052907/EMAI/EMAI/DATASETS/D1/train/images",
+                label_mode='categorical',
+                validation_split=0.5,
+                subset="training",
+                color_mode="grayscale",
+                image_size=(int(height), int(width)),
+                seed=123,
+                batch_size = 10)
+		ev_ds = tf.keras.preprocessing.image_dataset_from_directory(
+				"/home/s3052907/EMAI/EMAI/DATASETS/D1/test/images",
+				label_mode='categorical',
+				validation_split=0.5,
+				subset="validation",
+				color_mode="grayscale",
+				image_size=(int(height), int(width)),
+				seed=123,
+				batch_size=10)
+		quantizer = vitis_quantize.VitisQuantizer(loadedModel)
+		quantized_model = quantizer.quantize_model(calib_dataset=q_ds, cle_steps=100) 
+		quantized_model.save('quantized_model.h5')
+		quantized_model.compile(
+			optimizer='adam',
+			loss="categorical_crossentropy",
+			metrics=[tf.keras.metrics.TopKCategoricalAccuracy(k=1)]
+		)
+
+		quantized_model.evaluate(ev_ds)
 	
 if __name__ == "__main__":
     main(sys.argv[1:])	
