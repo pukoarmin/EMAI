@@ -133,6 +133,9 @@ def main(argv):
 		quantized_model.evaluate(ev_ds)
 		###
 
+		with vitis_quantize.quantize_scope():
+			vitis_quantize.VitisQuantizer.dump_model(quantized_model, ev_ds)
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])	
