@@ -134,7 +134,7 @@ def main(argv):
 		###
 
 		with vitis_quantize.quantize_scope():
-			vitis_quantize.VitisQuantizer.dump_model(quantized_model, ev_ds)
+			vitis_quantize.VitisQuantizer.dump_model(quantized_model, ev_ds, output_dir="./")
 
 
 if __name__ == "__main__":
