@@ -1,0 +1,9 @@
+{
+    "lib": "libvart-dpu-runner.so",
+    "filename": "SweepNetVitisAI.xmodel",
+    "kernel": [
+        "subgraph_quant_activation_1(MergeMultoHsigmoid)",
+        "subgraph_quant_conv2d"
+    ],
+    "target": "DPUCZDX8G_ISA1_B4096"
+}
