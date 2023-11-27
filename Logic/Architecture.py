@@ -10,7 +10,7 @@ from tensorflow.keras import (utils, layers, models, activations, optimizers, re
 
 def SE_block(x_0, r=16):
     channels = x_0.shape[-1]
-    x = layers.GlobalAvgPool2D()(x_0)
+    x = layers.AveragePooling2D(pool_size=(x_0.shape[1], x_0.shape[2]))(x_0)
 
     # Add two new dimensions
     x = tf.expand_dims(x, axis=[1, 2])
