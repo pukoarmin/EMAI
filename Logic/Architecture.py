@@ -15,7 +15,7 @@ def SE_block(x_0, r=16):
     x = layers.Flatten()(x)
 
     # Reshape to add two new dimensions
-    x = layers.Reshape(x, (tf.shape(x)[0], 1, 1, tf.shape(x)[-1]))
+    x = layers.Reshape((1,1,channels))(x)
 
     x = layers.Conv2D(filters=channels // r, kernel_size=1, strides=1)(x)
     x = layers.Activation('relu')(x)
