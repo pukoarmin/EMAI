@@ -15,7 +15,7 @@ def SE_block(x_0, r=16):
     x = tf.keras.layers.Flatten()(x)
 
     # Add two new dimensions
-    x = tf.expand_dims(x, axis=[1, 2])
+    x = tf.expand_dims(tf.expand_dims(x, axis=1), axis=1)
 
     x = layers.Conv2D(filters=channels // r, kernel_size=1, strides=1)(x)
     x = layers.Activation('relu')(x)
