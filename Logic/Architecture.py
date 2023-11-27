@@ -8,19 +8,21 @@ from tensorflow import keras
 from keras.callbacks import ModelCheckpoint
 from tensorflow.keras import (utils, layers, models, activations, optimizers, regularizers, Model)
 
-def SE_block(x_0, r = 16):
+def SE_block(x_0, r=16):
     channels = x_0.shape[-1]
     x = layers.GlobalAvgPool2D()(x_0)
-   
-    x = x[:, None, None, :]
-    
-    x = layers.Conv2D(filters=channels//r, kernel_size=1, strides=1)(x)
+
+    # Add two new dimensions
+    x = tf.expand_dims(x, axis=[1, 2])
+
+    x = layers.Conv2D(filters=channels // r, kernel_size=1, strides=1)(x)
     x = layers.Activation('relu')(x)
     x = layers.Conv2D(filters=channels, kernel_size=1, strides=1)(x)
     x = layers.Activation('sigmoid')(x)
     x = layers.Multiply()([x_0, x])
-    
+
     return x
+
     
 def SweepNet(image_height, image_width):
     width = image_width
