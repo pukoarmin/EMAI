@@ -21,7 +21,7 @@ def SE_block(x_0, r=16):
     x = layers.Activation('relu')(x)
     x = layers.Conv2D(filters=channels, kernel_size=1, strides=1)(x)
     x = layers.Activation('sigmoid')(x)
-    x = tf.multiply(x_0, x)
+    x = tf.math.multiply(x_0, x)
 
     return x
 
