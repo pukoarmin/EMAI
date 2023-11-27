@@ -11,11 +11,11 @@ from tensorflow.keras import (utils, layers, models, activations, optimizers, re
 def SE_block(x_0, r=16):
     channels = x_0.shape[-1]
     pool_size = (x_0.shape[1], x_0.shape[2])
-    x = tf.keras.layers.AveragePooling2D(pool_size=pool_size)(x_0)
-    x = tf.keras.layers.Flatten()(x)
+    x = layers.AveragePooling2D(pool_size=pool_size)(x_0)
+    x = layers.Flatten()(x)
 
     # Reshape to add two new dimensions
-    x = layers.reshape(x, (tf.shape(x)[0], 1, 1, tf.shape(x)[-1]))
+    x = layers.Reshape(x, (tf.shape(x)[0], 1, 1, tf.shape(x)[-1]))
 
     x = layers.Conv2D(filters=channels // r, kernel_size=1, strides=1)(x)
     x = layers.Activation('relu')(x)
@@ -50,8 +50,8 @@ def SweepNet(image_height, image_width):
     sweepcnn = layers.Dense(32, activation='relu')(sweepcnn)
     
     pool_size = (sweepcnn.shape[1], sweepcnn.shape[2])
-    sweepcnn = tf.keras.layers.AveragePooling2D(pool_size=pool_size)(sweepcnn)
-    sweepcnn = tf.keras.layers.Flatten()(sweepcnn)
+    sweepcnn = layers.AveragePooling2D(pool_size=pool_size)(sweepcnn)
+    sweepcnn = layers.Flatten()(sweepcnn)
 
     prediction = layers.Dense(2, activation='softmax')(sweepcnn)
     
