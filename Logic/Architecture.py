@@ -12,7 +12,7 @@ def SE_block(x_0, r=16):
     channels = x_0.shape[-1]
     pool_size = (x_0.shape[1], x_0.shape[2])
     x = layers.AveragePooling2D(pool_size=pool_size)(x_0)
-    x = layers.Flatten()(x)
+    x = layers.Reshape((1, 1, x.shape[-1]))(x)
 
     # Reshape to add two new dimensions
     x = layers.Reshape((1,1,channels))(x)
@@ -51,7 +51,7 @@ def SweepNet(image_height, image_width):
     
     pool_size = (sweepcnn.shape[1], sweepcnn.shape[2])
     sweepcnn = layers.AveragePooling2D(pool_size=pool_size)(sweepcnn)
-    sweepcnn = layers.Flatten()(sweepcnn)
+    sweepcnn = layers.Reshape((1, 1, sweepcnn.shape[-1]))(sweepcnn)
 
     prediction = layers.Dense(2, activation='softmax')(sweepcnn)
     
