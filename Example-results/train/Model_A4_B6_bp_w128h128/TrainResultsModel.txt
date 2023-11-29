@@ -29,12 +29,11 @@ ________________________________________________________________________________
  max_pooling2d_2 (MaxPooling2D)  (None, 122, 122, 32  0          ['conv2d_2[0][0]']               
                                 )                                                                 
                                                                                                   
- average_pooling2d (AveragePool  (None, 1, 1, 32)    0           ['max_pooling2d_2[0][0]']        
- ing2D)                                                                                           
+ global_average_pooling2d (Glob  (None, 32)          0           ['max_pooling2d_2[0][0]']        
+ alAveragePooling2D)                                                                              
                                                                                                   
- flatten (Flatten)              (None, 32)           0           ['average_pooling2d[0][0]']      
-                                                                                                  
- reshape (Reshape)              (None, 1, 1, 32)     0           ['flatten[0][0]']                
+ reshape (Reshape)              (None, 1, 1, 32)     0           ['global_average_pooling2d[0][0]'
+                                                                 ]                                
                                                                                                   
  conv2d_3 (Conv2D)              (None, 1, 1, 2)      66          ['reshape[0][0]']                
                                                                                                   
@@ -50,12 +49,11 @@ ________________________________________________________________________________
  dense (Dense)                  (None, 122, 122, 32  1056        ['multiply[0][0]']               
                                 )                                                                 
                                                                                                   
- average_pooling2d_1 (AveragePo  (None, 1, 1, 32)    0           ['dense[0][0]']                  
- oling2D)                                                                                         
+ global_average_pooling2d_1 (Gl  (None, 32)          0           ['dense[0][0]']                  
+ obalAveragePooling2D)                                                                            
                                                                                                   
- flatten_1 (Flatten)            (None, 32)           0           ['average_pooling2d_1[0][0]']    
-                                                                                                  
- dense_1 (Dense)                (None, 2)            66          ['flatten_1[0][0]']              
+ dense_1 (Dense)                (None, 2)            66          ['global_average_pooling2d_1[0][0
+                                                                 ]']                              
                                                                                                   
 ==================================================================================================
 Total params: 9,700
