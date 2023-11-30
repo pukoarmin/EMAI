@@ -11,6 +11,7 @@ from tensorflow.keras import (utils, layers, models, activations, optimizers, re
 def SE_block(x_0, r=16):
     channels = x_0.shape[-1]
 
+    x = layers.GlobalAvgPool2D()(x_0)
     x = layers.Conv2D(filters=channels // r, kernel_size=1, strides=1)(x)
     x = layers.Activation('relu')(x)
     x = layers.Conv2D(filters=channels, kernel_size=1, strides=1)(x)
