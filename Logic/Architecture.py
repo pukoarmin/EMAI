@@ -10,12 +10,17 @@ from tensorflow.keras import (utils, layers, models, activations, optimizers, re
 
 def SE_block(x_0, r=16):
     channels = x_0.shape[-1]
-
+    
     x = layers.GlobalAvgPool2D()(x_0)
+    
+    # Reshape to add two new dimensions
+    x = layers.Reshape((1,1,channels))(x)
+
     x = layers.Conv2D(filters=channels // r, kernel_size=1, strides=1)(x)
     x = layers.Activation('relu')(x)
     x = layers.Conv2D(filters=channels, kernel_size=1, strides=1)(x)
     x = layers.Activation('sigmoid')(x)
+    #x = layers.Multiply()([x_0, x])
 
     return x
 
@@ -43,6 +48,12 @@ def SweepNet(image_height, image_width):
 
     sweepcnn = layers.Dense(32, activation='relu')(sweepcnn)
     
+    sweepcnn = layers.GlobalAvgPool2D()(sweepcnn)
+    #pool_size = (sweepcnn.shape[1], sweepcnn.shape[2])
+    #sweepcnn = layers.AveragePooling2D(pool_size=pool_size)(sweepcnn)
+    #print(sweepcnn.shape)
+    #sweepcnn = layers.Flatten()(sweepcnn)
+    #print(sweepcnn.shape)
     prediction = layers.Dense(2, activation='softmax')(sweepcnn)
     
     model = models.Model(inputs=inputs, outputs=prediction)
