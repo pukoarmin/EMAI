@@ -20,7 +20,7 @@ def SE_block(x_0, r=16):
     x = layers.Activation('relu')(x)
     x = layers.Conv2D(filters=channels, kernel_size=1, strides=1)(x)
     x = layers.Activation('sigmoid')(x)
-    #x = layers.Multiply()([x_0, x])
+    x = layers.Multiply()([x_0, x])
 
     return x
 
@@ -199,6 +199,7 @@ class Load:
         self.loadedModel = keras.models.load_model(self.modelName + "/weights.best.hdf5")
         self.outDirectory = outDirectory
         self.resultsData = np.empty((0, 4), float)
+        self.correctPred = 0
     
     def imageSingle(self, imageName):
         self.resultsData = np.empty((0, 4), float)
@@ -206,8 +207,8 @@ class Load:
         
 
     def imageFolder(self):
-        totalAmountOfImages = str(len(os.listdir(self.directory)))
-        print("total amount of Images " + totalAmountOfImages)
+        totalAmountOfImages = len(os.listdir(self.directory))
+        print("total amount of Images " + str(totalAmountOfImages))
         self.resultsData = np.empty((0, 4), float)
         start = time.time()
         with os.scandir(self.directory) as i:
@@ -216,9 +217,12 @@ class Load:
                     self.__performPrediction(image.name)
         end = time.time()
         self.exe_time = end-start
-        with open((self.outDirectory + "/TrainExecutionTime.txt"), 'w') as f:
+        # Should this be prediction instead of exec time?
+        with open((self.outDirectory + "/PredExecutionTime.txt"), 'w') as f:
             with redirect_stdout(f):
-                print("The execution time of training is: " + str(self.exe_time))
+                print("The execution time of prediction is: " + str(self.exe_time))
+                print("\nThe accuracy is: " + str(self.correctPred/totalAmountOfImages))
+                print("\n IPS: " + str(totalAmountOfImages / self.exe_time))
         return totalAmountOfImages
 
     def generateReport(self):
@@ -252,6 +256,14 @@ class Load:
 
         score_copy = score.tolist()
         classname = score_copy.index(max(score_copy))
+
+        classesStr = ["neutral", "selection"]
+        if classesStr[0] in self.directory:
+            if int(classname) == 0:
+                self.correctPred += 1
+        else:
+            if int(classname) == 1:
+                self.correctPred += 1
 
         endPos = imageName.rfind(".png")
         window = str(imageName[:])
