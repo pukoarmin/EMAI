@@ -1,0 +1,5 @@
+The execution time of prediction is: 92.12550520896912
+
+The accuracy is: 0.981
+
+ IPS: 10.854757298010915
