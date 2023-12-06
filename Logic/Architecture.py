@@ -61,14 +61,14 @@ def SweepNet(image_height, image_width):
     model = models.Model(inputs=inputs, outputs=prediction)
 
 	# Enable Quantization Aware Training:
-	quantize_annotate_layer = tfmot.quantization.keras.quantize_annotate_layer
-	quantize_annotate_model = tfmot.quantization.keras.quantize_annotate_model
-	quantize_scope = tfmot.quantization.keras.quantize_scope
+    quantize_annotate_layer = tfmot.quantization.keras.quantize_annotate_layer
+    quantize_annotate_model = tfmot.quantization.keras.quantize_annotate_model
+    quantize_scope = tfmot.quantization.keras.quantize_scope
 
-	annotated_model = quantize_annotate_model(model)
+    annotated_model = quantize_annotate_model(model)
 
 	# Use quantize_scope to specify which layers to quantize
-	with quantize_scope(
+    with quantize_scope(
 		{'Conv2D': quantize_annotate_layer,
 		 'Dense': quantize_annotate_layer,
 		 'Activation': quantize_annotate_layer,
@@ -76,10 +76,10 @@ def SweepNet(image_height, image_width):
 		 'Multiply': quantize_annotate_layer,
 		 'Reshape': quantize_annotate_layer}):
 		# Build the model inside the quantize_scope to apply annotations
-		annotated_model.build((None, *shape))
+        annotated_model.build((None, *shape))
 
 	# Compile and train your model as usual
-	annotated_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=[tf.keras.metrics.TopKCategoricalAccuracy(k=1)])
+    annotated_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=[tf.keras.metrics.TopKCategoricalAccuracy(k=1)])
 
 	# Fine-tune the model with quantization
 	#fine_tuned_model = tfmot.quantization.keras.quantize_apply(annotated_model)
