@@ -1,1 +1,0 @@
-The execution time of training is: 131.89294147491455
